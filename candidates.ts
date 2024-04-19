@@ -2,22 +2,29 @@
 ///                   C A N D I D A T E S                   ///
 ///////////////////////////////////////////////////////////////
 
-import { Action, CandidateFunc } from "./types";
+import { Move, CandidateFunc } from "./types";
 
 
-export const secret: CandidateFunc = (myActs: Action[], theirActs: Action[]) => {
-  myActs[0];
-  return theirActs[theirActs.length - 1] ?? 'cooperate';
+export const titForTat: CandidateFunc = (myMoves: Move[], theirMoves: Move[]) => {
+  return theirMoves[theirMoves.length - 1] ?? 'cooperate';
 }
 
-export const selfish: CandidateFunc = (myActs: Action[], theirActs: Action[]) => {
+export const screwYou: CandidateFunc = (myMoves: Move[], theirMoves: Move[]) => {
   return 'defect';
 }
 
-export const niceGuy: CandidateFunc = (myActs: Action[], theirActs: Action[]) => {
+export const niceGuy: CandidateFunc = (myMoves: Move[], theirMoves: Move[]) => {
   return 'cooperate';
 }
 
-export const random: CandidateFunc = (myActs: Action[], theirActs: Action[]) => {
+export const random: CandidateFunc = (myMoves: Move[], theirMoves: Move[]) => {
   return Math.random() < 0.5 ? 'cooperate' : 'defect';
+}
+
+export const ozStrategy: CandidateFunc = (myMoves: Move[], theirMoves: Move[]) => {
+  /**
+   * cooperate for 2 moves, defect for 3
+   */
+  const index = myMoves.length % 5;
+  return index <= 2 ? 'cooperate' : 'defect';
 }

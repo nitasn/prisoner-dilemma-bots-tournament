@@ -2,6 +2,6 @@
 ///                        T Y P E S                        ///
 ///////////////////////////////////////////////////////////////
 
-export type Action = 'cooperate' | 'defect'
+export type Move = 'cooperate' | 'defect'
 
-export type CandidateFunc = (myActs: Action[], theirActs: Action[]) => Action
+export type CandidateFunc = (myMoves: Move[], theirMoves: Move[]) => Move

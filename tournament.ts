@@ -2,7 +2,7 @@
 ///                   T O U R N A M E N T                   ///
 ///////////////////////////////////////////////////////////////
 
-import { Action } from "./types";
+import { Move } from "./types";
 import * as candidatesObject from "./candidates";
 import { range } from "./utils";
 
@@ -19,15 +19,15 @@ for (const round of range(NUM_ROUNDS)) {
   for (let idxA = 0; idxA < candidateFuncs.length - 1; idxA++) {
     for (let idxB = idxA + 1; idxB < candidateFuncs.length; idxB++) {
       
-      const actionsA: Action[] = [];
-      const actionsB: Action[] = [];
+      const movesA: Move[] = [];
+      const movesB: Move[] = [];
 
       for (const subgame of range(ROUND_LENGTH)) {
-        const actA = candidateFuncs[idxA](actionsA, actionsB);
-        const actB = candidateFuncs[idxB](actionsB, actionsA);
+        const actA = candidateFuncs[idxA](movesA, movesB);
+        const actB = candidateFuncs[idxB](movesB, movesA);
 
-        actionsA.push(actA);
-        actionsB.push(actB);
+        movesA.push(actA);
+        movesB.push(actB);
 
         if (actA == 'cooperate' && actB == 'cooperate') {
           scoresTable[idxA][idxB] += 3;
