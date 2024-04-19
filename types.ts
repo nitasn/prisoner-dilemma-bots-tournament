@@ -1,0 +1,7 @@
+///////////////////////////////////////////////////////////////
+///                        T Y P E S                        ///
+///////////////////////////////////////////////////////////////
+
+export type Action = 'cooperate' | 'defect'
+
+export type CandidateFunc = (myActs: Action[], theirActs: Action[]) => Action
