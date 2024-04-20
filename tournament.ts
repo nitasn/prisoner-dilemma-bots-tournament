@@ -74,31 +74,20 @@ for (let idxA = 0; idxA < candidates.length; idxA++) {
 }
 
 /**
- * Print those AVERAGES in a nicely formatted table.
+ * Print the AVERAGES in a nicely formatted table.
  */
-for (let idxA = 0; idxA < candidates.length; idxA++) {
-  for (let idxB = idxA; idxB < candidates.length; idxB++) {
-    const avgA = scoresTable[idxA][idxB].toFixed(2);
-    const avgB = scoresTable[idxB][idxA].toFixed(2);
+const scores2D = candidates.map(({ name: rowName }, rowIdx) => {
+  const row = Object.fromEntries(
+    candidates.map(({ name: colName }, colIdx) => 
+      [colName, round(scoresTable[rowIdx][colIdx], 2)]
+    )
+  );
+  return { [rowName]: row };
+});
 
-    const botA = candidates[idxA].name;
-    const botB = candidates[idxB].name;
+console.log("\n average points bot[row] got against bot[column]");
+console.table(Object.assign({}, ...scores2D));
 
-    const maxWidth = Math.max(
-      ...candidates.map(({ name }) => name.length),
-      avgA.length,
-      avgB.length
-    );
-
-    const fixedWidth = (entry: string) =>
-      entry + " ".repeat(maxWidth - entry.length);
-
-    console.log(`
-      ${fixedWidth(botA)}   ${fixedWidth(botB)}
-      ${fixedWidth(avgA)}   ${fixedWidth(avgB)}
-    `);
-  }
-}
 
 /**
  * Print bots sorted by average score.
@@ -111,9 +100,10 @@ const candidatesSortedByAvgScore = [...candidates].sort((botA, botB) => {
   return avgScore.get(botB)! - avgScore.get(botA)!;
 });
 
-console.table(
-  candidatesSortedByAvgScore.map((candidate) => ({
-    Bot: candidate.name,
-    Average: round(avgScore.get(candidate)!, 2),
-  }))
-);
+const scores1D = candidatesSortedByAvgScore.map((candidate) => {
+  const row = { Average: round(avgScore.get(candidate)!, 2) };
+  return { [candidate.name]: row };
+});
+
+console.log("\n average against bots got on total");
+console.table(Object.assign({}, ...scores1D));
