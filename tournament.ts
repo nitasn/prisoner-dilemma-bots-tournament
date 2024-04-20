@@ -27,25 +27,25 @@ for (const round of range(NUM_ROUNDS)) {
       const movesB: Move[] = [];
 
       for (const move of range(ROUND_LENGTH)) {
-        const actA = candidateFuncs[idxA](movesA, movesB);
-        const actB = candidateFuncs[idxB](movesB, movesA);
+        const moveA = candidateFuncs[idxA](movesA, movesB);
+        const moveB = candidateFuncs[idxB](movesB, movesA);
 
-        movesA.push(actA);
-        movesB.push(actB);
+        movesA.push(moveA);
+        movesB.push(moveB);
 
-        if (actA == 'cooperate' && actB == 'cooperate') {
+        if (moveA == Move.Coöperate && moveB == Move.Coöperate) {
           scoresTable[idxA][idxB] += 3;
           scoresTable[idxB][idxA] += 3;
         }
-        else if (actA == 'cooperate' && actB == 'defect') {
+        else if (moveA == Move.Coöperate && moveB == Move.Defect) {
           scoresTable[idxA][idxB] += 0;
           scoresTable[idxB][idxA] += 5;
         }
-        else if (actA == 'defect' && actB == 'cooperate') {
+        else if (moveA == Move.Defect && moveB == Move.Coöperate) {
           scoresTable[idxA][idxB] += 5;
           scoresTable[idxB][idxA] += 0;
         }
-        else if (actA == 'defect' && actB == 'defect') {
+        else if (moveA == Move.Defect && moveB == Move.Defect) {
           scoresTable[idxA][idxB] += 1;
           scoresTable[idxB][idxA] += 1;
         }

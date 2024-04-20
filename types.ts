@@ -2,6 +2,6 @@
 ///                        T Y P E S                        ///
 ///////////////////////////////////////////////////////////////
 
-export type Move = 'cooperate' | 'defect'
+export enum Move { Coöperate, Defect };
 
-export type CandidateFunc = (myMoves: Move[], theirMoves: Move[]) => Move
+export type CandidateFunc = (myMoves: Move[], theirMoves: Move[]) => Move;
