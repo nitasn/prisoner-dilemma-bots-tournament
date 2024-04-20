@@ -4,7 +4,7 @@
 
 import { Move } from "./types";
 import * as candidatesModule from "./candidates";
-import { average, range } from "./utils";
+import { average, range, round } from "./utils";
 
 const candidates = Object.entries(candidatesModule).map(([name, obj]) => ({
   name,
@@ -100,7 +100,9 @@ for (let idxA = 0; idxA < candidates.length; idxA++) {
   }
 }
 
-
+/**
+ * Print bots sorted by average score.
+ */
 const avgScore = new WeakMap(candidates.map((candidate, idx) => {
   return [candidate, average(scoresTable[idx])]
 }));
@@ -109,11 +111,9 @@ const candidatesSortedByAvgScore = [...candidates].sort((botA, botB) => {
   return avgScore.get(botB)! - avgScore.get(botA)!;
 });
 
-console.log("\n-----------------------------------\n");
-
 console.table(
   candidatesSortedByAvgScore.map((candidate) => ({
     Bot: candidate.name,
-    Average: avgScore.get(candidate),
+    Average: round(avgScore.get(candidate)!, 2),
   }))
 );
