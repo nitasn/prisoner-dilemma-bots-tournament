@@ -13,16 +13,19 @@ const candidateFuncs = Object.values(candidatesObject);
 const NUM_ROUNDS = 1000;
 const ROUND_LENGTH = 1000;
 
-const scoresTable = range(candidateFuncs.length).map((_ => Array(candidateFuncs.length).fill(0)));
+/**
+ * scoresTable[idxA][idxB] = the total points funcA got when playing against funcB.
+ */
+const scoresTable = candidateFuncs.map((_ => Array(candidateFuncs.length).fill(0)));
 
 for (const round of range(NUM_ROUNDS)) {
   for (let idxA = 0; idxA < candidateFuncs.length - 1; idxA++) {
-    for (let idxB = idxA + 1; idxB < candidateFuncs.length; idxB++) {
+    for (let idxB = idxA; idxB < candidateFuncs.length; idxB++) {
       
       const movesA: Move[] = [];
       const movesB: Move[] = [];
 
-      for (const subgame of range(ROUND_LENGTH)) {
+      for (const move of range(ROUND_LENGTH)) {
         const actA = candidateFuncs[idxA](movesA, movesB);
         const actB = candidateFuncs[idxB](movesB, movesA);
 
@@ -51,10 +54,15 @@ for (const round of range(NUM_ROUNDS)) {
 }
 
 for (let idxA = 0; idxA < candidateFuncs.length - 1; idxA++) {
-  for (let idxB = idxA + 1; idxB < candidateFuncs.length; idxB++) {
+  for (let idxB = idxA; idxB < candidateFuncs.length; idxB++) {
     
-    const scoreA = scoresTable[idxA][idxB] / (NUM_ROUNDS * ROUND_LENGTH);
-    const scoreB = scoresTable[idxB][idxA] / (NUM_ROUNDS * ROUND_LENGTH);
+    let scoreA = scoresTable[idxA][idxB] / (NUM_ROUNDS * ROUND_LENGTH);
+    let scoreB = scoresTable[idxB][idxA] / (NUM_ROUNDS * ROUND_LENGTH);
+
+    if (idxA == idxB) {
+      scoreA /= 2;
+      scoreB /= 2;
+    }
 
     const stringScoreA = scoreA.toFixed(2);
     const stringScoreB = scoreB.toFixed(2);
