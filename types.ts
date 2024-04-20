@@ -2,4 +2,4 @@
 ///                        T Y P E S                        ///
 ///////////////////////////////////////////////////////////////
 
-export type Move = "coöperate" | "defect";
+export type Move = "cooperate" | "defect";

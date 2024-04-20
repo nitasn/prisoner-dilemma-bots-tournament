@@ -1,10 +1,10 @@
-///////////////////////////////////////////////////////////////
-///                   T O U R N A M E N T                   ///
-///////////////////////////////////////////////////////////////
-
 import { Move } from "./types";
 import * as candidatesModule from "./candidates";
 import { average, range, round } from "./utils";
+
+///////////////////////////////////////////////////////////////
+///                   T O U R N A M E N T                   ///
+///////////////////////////////////////////////////////////////
 
 const candidates = Object.entries(candidatesModule).map(([name, obj]) => ({
   name,
@@ -36,15 +36,15 @@ for (const round of range(NUM_ROUNDS)) {
         movesA.push(moveA);
         movesB.push(moveB);
 
-        if (moveA == "coöperate" && moveB == "coöperate") {
+        if (moveA == "cooperate" && moveB == "cooperate") {
           scoresTable[idxA][idxB] += 3;
           scoresTable[idxB][idxA] += 3;
         }
-        else if (moveA == "coöperate" && moveB == "defect") {
+        else if (moveA == "cooperate" && moveB == "defect") {
           scoresTable[idxA][idxB] += 0;
           scoresTable[idxB][idxA] += 5;
         }
-        else if (moveA == "defect" && moveB == "coöperate") {
+        else if (moveA == "defect" && moveB == "cooperate") {
           scoresTable[idxA][idxB] += 5;
           scoresTable[idxB][idxA] += 0;
         }
@@ -56,6 +56,10 @@ for (const round of range(NUM_ROUNDS)) {
     }
   }
 }
+
+///////////////////////////////////////////////////////////////
+///                        S T A T S                        ///
+///////////////////////////////////////////////////////////////
 
 /**
  * The AVERAGE points per turn that botA got against botB.
@@ -74,7 +78,7 @@ for (let idxA = 0; idxA < candidates.length; idxA++) {
 }
 
 /**
- * Print the AVERAGES in a nicely formatted table.
+ * Print 2D AVERAGES in a nicely formatted table.
  */
 const scores2D = candidates.map(({ name: rowName }, rowIdx) => {
   const row = Object.fromEntries(
@@ -90,7 +94,7 @@ console.table(Object.assign({}, ...scores2D));
 
 
 /**
- * Print bots sorted by average score.
+ * Print 1D AVERAGES in descending order.
  */
 const avgScore = new WeakMap(candidates.map((candidate, idx) => {
   return [candidate, average(scoresTable[idx])]

@@ -1,7 +1,3 @@
-///////////////////////////////////////////////////////////////
-///                   C A N D I D A T E S                   ///
-///////////////////////////////////////////////////////////////
-
 import { Move } from "./types";
 import { lastOf } from "./utils";
 
@@ -15,9 +11,13 @@ interface Strategy {
   [key: string]: any;
 }
 
+///////////////////////////////////////////////////////////////
+///                     T H E   B O T S                     ///
+///////////////////////////////////////////////////////////////
+
 export const TitForTat: Strategy = {
   chooseNextMove(myMoves, theirMoves) {
-    return lastOf(theirMoves) ?? "coöperate";
+    return lastOf(theirMoves) ?? "cooperate";
   },
 };
 
@@ -29,13 +29,13 @@ export const ScrewYou: Strategy = {
 
 export const NiceGuy: Strategy = {
   chooseNextMove(myMoves, theirMoves) {
-    return "coöperate";
+    return "cooperate";
   },
 };
 
 export const Random: Strategy = {
   chooseNextMove(myMoves, theirMoves) {
-    return Math.random() < 0.5 ? "coöperate" : "defect";
+    return Math.random() < 0.5 ? "cooperate" : "defect";
   },
 };
 
@@ -44,7 +44,7 @@ export const YesYesNoNoNo: Strategy = {
    * cooperate for 2 moves, defect for 3
    */
   chooseNextMove(myMoves, theirMoves) {
-    return (myMoves.length % 5) <= 2 ? "coöperate" : "defect";
+    return (myMoves.length % 5) <= 2 ? "cooperate" : "defect";
   },
 };
 
@@ -55,7 +55,7 @@ export const CassandraBot: Strategy = {
    */
   chooseNextMove(myMoves, theirMoves) {
     const isGuilty = theirMoves.slice(theirMoves.length - 3).includes("defect");
-    return isGuilty ? "coöperate" : "defect";
+    return isGuilty ? "cooperate" : "defect";
   },
 };
 
@@ -66,7 +66,7 @@ export const OzStrategy: Strategy = {
     if (lastOf(theirMoves) == "defect") {
       this.timesGottenScrewed++;
     }
-    return this.timesGottenScrewed <= 3 ? "coöperate" : "defect";
+    return this.timesGottenScrewed <= 3 ? "cooperate" : "defect";
   },
 
   onNewGame() {
