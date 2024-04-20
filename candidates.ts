@@ -8,10 +8,10 @@ import { lastOf } from "./utils";
 interface Strategy {
   chooseNextMove(myMoves: Move[], theirMoves: Move[]): Move;
 
-  // state callback to define if needed
+  // optional callback for bots to have
   onNewGame?(): void;
 
-  // allow state properties
+  // allows state properties
   [key: string]: any;
 }
 
