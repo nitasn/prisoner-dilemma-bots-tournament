@@ -18,10 +18,11 @@ const ROUND_LENGTH = 1000;
  */
 const scoresTable = candidateFuncs.map((_ => Array(candidateFuncs.length).fill(0)));
 
+
 for (const round of range(NUM_ROUNDS)) {
-  for (let idxA = 0; idxA < candidateFuncs.length - 1; idxA++) {
+  for (let idxA = 0; idxA < candidateFuncs.length; idxA++) {
     for (let idxB = idxA; idxB < candidateFuncs.length; idxB++) {
-      
+
       const movesA: Move[] = [];
       const movesB: Move[] = [];
 
@@ -53,31 +54,46 @@ for (const round of range(NUM_ROUNDS)) {
   }
 }
 
-for (let idxA = 0; idxA < candidateFuncs.length - 1; idxA++) {
+/**
+ * The AVERAGE points per turn that funcA got against funcB.
+ */
+for (let idxA = 0; idxA < candidateFuncs.length; idxA++) {
   for (let idxB = idxA; idxB < candidateFuncs.length; idxB++) {
-    
-    let scoreA = scoresTable[idxA][idxB] / (NUM_ROUNDS * ROUND_LENGTH);
-    let scoreB = scoresTable[idxB][idxA] / (NUM_ROUNDS * ROUND_LENGTH);
 
-    if (idxA == idxB) {
-      scoreA /= 2;
-      scoreB /= 2;
+    scoresTable[idxA][idxB] /= (NUM_ROUNDS * ROUND_LENGTH);
+
+    if (idxA != idxB) {
+      scoresTable[idxB][idxA] /= (NUM_ROUNDS * ROUND_LENGTH);
     }
+    else {
+      scoresTable[idxA][idxB] /= 2;
+    }
+  }
+}
 
-    const stringScoreA = scoreA.toFixed(2);
-    const stringScoreB = scoreB.toFixed(2);
+/**
+ * Print these AVERAGES in a nicely formatted table.
+ */
+for (let idxA = 0; idxA < candidateFuncs.length; idxA++) {
+  for (let idxB = idxA; idxB < candidateFuncs.length; idxB++) {
+
+    const avgA = scoresTable[idxA][idxB].toFixed(2);
+    const avgB = scoresTable[idxB][idxA].toFixed(2);
+
+    const botA = candidateNames[idxA];
+    const botB = candidateNames[idxB];
 
     const maxWidth = Math.max(
-      ...candidateNames.map((name) => name.length), 
-      stringScoreA.length, 
-      stringScoreB.length,
+      ...candidateNames.map((name) => name.length),
+      avgA.length,
+      avgB.length,
     );
 
-    const fixedWidth = (thing: string|number) => thing + ' '.repeat(maxWidth - thing.toString().length);
+    const fixedWidth = (entry: string) => entry + ' '.repeat(maxWidth - entry.length);
 
     console.log(`
-      ${fixedWidth(candidateNames[idxA])}   ${fixedWidth(candidateNames[idxB])}
-      ${fixedWidth(stringScoreA)}   ${fixedWidth(stringScoreB)}
+      ${fixedWidth(botA)}   ${fixedWidth(botB)}
+      ${fixedWidth(avgA)}   ${fixedWidth(avgB)}
     `);
   }
 }
