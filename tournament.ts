@@ -3,49 +3,52 @@
 ///////////////////////////////////////////////////////////////
 
 import { Move } from "./types";
-import * as candidatesObject from "./candidates";
+import * as candidatesModule from "./candidates";
 import { range } from "./utils";
 
-const candidateNames = Object.keys(candidatesObject);
-const candidateFuncs = Object.values(candidatesObject);
-
+const candidates = Object.entries(candidatesModule).map(([name, obj]) => ({
+  name,
+  ...obj,
+}));
 
 const NUM_ROUNDS = 1000;
 const ROUND_LENGTH = 1000;
 
 /**
- * scoresTable[idxA][idxB] = the total points funcA got when playing against funcB.
+ * scoresTable[idxA][idxB] = the total points botA got when playing against botB.
  */
-const scoresTable = candidateFuncs.map((_ => Array(candidateFuncs.length).fill(0)));
-
+const scoresTable = candidates.map(_ => Array(candidates.length).fill(0));
 
 for (const round of range(NUM_ROUNDS)) {
-  for (let idxA = 0; idxA < candidateFuncs.length; idxA++) {
-    for (let idxB = idxA; idxB < candidateFuncs.length; idxB++) {
+  for (let idxA = 0; idxA < candidates.length; idxA++) {
+    for (let idxB = idxA; idxB < candidates.length; idxB++) {
+
+      candidates[idxA].onNewGame?.();
+      candidates[idxB].onNewGame?.();
 
       const movesA: Move[] = [];
       const movesB: Move[] = [];
 
       for (const move of range(ROUND_LENGTH)) {
-        const moveA = candidateFuncs[idxA](movesA, movesB);
-        const moveB = candidateFuncs[idxB](movesB, movesA);
+        const moveA = candidates[idxA].chooseNextMove(movesA, movesB);
+        const moveB = candidates[idxB].chooseNextMove(movesB, movesA);
 
         movesA.push(moveA);
         movesB.push(moveB);
 
-        if (moveA == Move.Coöperate && moveB == Move.Coöperate) {
+        if (moveA == "coöperate" && moveB == "coöperate") {
           scoresTable[idxA][idxB] += 3;
           scoresTable[idxB][idxA] += 3;
         }
-        else if (moveA == Move.Coöperate && moveB == Move.Defect) {
+        else if (moveA == "coöperate" && moveB == "defect") {
           scoresTable[idxA][idxB] += 0;
           scoresTable[idxB][idxA] += 5;
         }
-        else if (moveA == Move.Defect && moveB == Move.Coöperate) {
+        else if (moveA == "defect" && moveB == "coöperate") {
           scoresTable[idxA][idxB] += 5;
           scoresTable[idxB][idxA] += 0;
         }
-        else if (moveA == Move.Defect && moveB == Move.Defect) {
+        else if (moveA == "defect" && moveB == "defect") {
           scoresTable[idxA][idxB] += 1;
           scoresTable[idxB][idxA] += 1;
         }
@@ -55,15 +58,14 @@ for (const round of range(NUM_ROUNDS)) {
 }
 
 /**
- * The AVERAGE points per turn that funcA got against funcB.
+ * The AVERAGE points per turn that botA got against botB.
  */
-for (let idxA = 0; idxA < candidateFuncs.length; idxA++) {
-  for (let idxB = idxA; idxB < candidateFuncs.length; idxB++) {
-
-    scoresTable[idxA][idxB] /= (NUM_ROUNDS * ROUND_LENGTH);
+for (let idxA = 0; idxA < candidates.length; idxA++) {
+  for (let idxB = idxA; idxB < candidates.length; idxB++) {
+    scoresTable[idxA][idxB] /= NUM_ROUNDS * ROUND_LENGTH;
 
     if (idxA != idxB) {
-      scoresTable[idxB][idxA] /= (NUM_ROUNDS * ROUND_LENGTH);
+      scoresTable[idxB][idxA] /= NUM_ROUNDS * ROUND_LENGTH;
     }
     else {
       scoresTable[idxA][idxB] /= 2;
@@ -72,24 +74,24 @@ for (let idxA = 0; idxA < candidateFuncs.length; idxA++) {
 }
 
 /**
- * Print these AVERAGES in a nicely formatted table.
+ * Print those AVERAGES in a nicely formatted table.
  */
-for (let idxA = 0; idxA < candidateFuncs.length; idxA++) {
-  for (let idxB = idxA; idxB < candidateFuncs.length; idxB++) {
-
+for (let idxA = 0; idxA < candidates.length; idxA++) {
+  for (let idxB = idxA; idxB < candidates.length; idxB++) {
     const avgA = scoresTable[idxA][idxB].toFixed(2);
     const avgB = scoresTable[idxB][idxA].toFixed(2);
 
-    const botA = candidateNames[idxA];
-    const botB = candidateNames[idxB];
+    const botA = candidates[idxA].name;
+    const botB = candidates[idxB].name;
 
     const maxWidth = Math.max(
-      ...candidateNames.map((name) => name.length),
+      ...candidates.map(({ name }) => name.length),
       avgA.length,
-      avgB.length,
+      avgB.length
     );
 
-    const fixedWidth = (entry: string) => entry + ' '.repeat(maxWidth - entry.length);
+    const fixedWidth = (entry: string) =>
+      entry + " ".repeat(maxWidth - entry.length);
 
     console.log(`
       ${fixedWidth(botA)}   ${fixedWidth(botB)}
