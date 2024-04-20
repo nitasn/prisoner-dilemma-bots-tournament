@@ -4,7 +4,7 @@
 
 import { Move } from "./types";
 import * as candidatesModule from "./candidates";
-import { range } from "./utils";
+import { average, range } from "./utils";
 
 const candidates = Object.entries(candidatesModule).map(([name, obj]) => ({
   name,
@@ -15,9 +15,9 @@ const NUM_ROUNDS = 1000;
 const ROUND_LENGTH = 1000;
 
 /**
- * scoresTable[idxA][idxB] = the total points botA got when playing against botB.
+ * scoresTable[idxA][idxB] = total points botA got against botB.
  */
-const scoresTable = candidates.map(_ => Array(candidates.length).fill(0));
+const scoresTable: number[][] = candidates.map(_ => Array(candidates.length).fill(0));
 
 for (const round of range(NUM_ROUNDS)) {
   for (let idxA = 0; idxA < candidates.length; idxA++) {
@@ -99,3 +99,21 @@ for (let idxA = 0; idxA < candidates.length; idxA++) {
     `);
   }
 }
+
+
+const avgScore = new WeakMap(candidates.map((candidate, idx) => {
+  return [candidate, average(scoresTable[idx])]
+}));
+
+const candidatesSortedByAvgScore = [...candidates].sort((botA, botB) => {
+  return avgScore.get(botB)! - avgScore.get(botA)!;
+});
+
+console.log("\n-----------------------------------\n");
+
+console.table(
+  candidatesSortedByAvgScore.map((candidate) => ({
+    Bot: candidate.name,
+    Average: avgScore.get(candidate),
+  }))
+);

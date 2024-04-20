@@ -4,6 +4,8 @@
 
 export const sum = (arr: number[]) => arr.reduce((sum, x) => sum + x);
 
+export const average = (arr: number[]) => sum(arr) / arr.length;
+
 /**
  * Python's range() function.
  */

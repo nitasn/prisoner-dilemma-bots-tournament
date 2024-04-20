@@ -39,7 +39,7 @@ export const Random: Strategy = {
   },
 };
 
-export const Nice2every5: Strategy = {
+export const YesYesNoNoNo: Strategy = {
   /**
    * cooperate for 2 moves, defect for 3
    */
