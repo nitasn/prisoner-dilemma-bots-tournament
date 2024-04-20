@@ -1,6 +1,6 @@
 import { Move } from "./types";
 import * as candidatesModule from "./candidates";
-import { average, range, round } from "./utils";
+import { average, round } from "./utils";
 
 ///////////////////////////////////////////////////////////////
 ///                   T O U R N A M E N T                   ///
@@ -19,7 +19,9 @@ const ROUND_LENGTH = 1000;
  */
 const scoresTable: number[][] = candidates.map(_ => Array(candidates.length).fill(0));
 
-for (const round of range(NUM_ROUNDS)) {
+
+for (let round = 0; round < NUM_ROUNDS; round++) {
+  // every combination of 2 candidates (without duplications)
   for (let idxA = 0; idxA < candidates.length; idxA++) {
     for (let idxB = idxA; idxB < candidates.length; idxB++) {
 
@@ -29,7 +31,7 @@ for (const round of range(NUM_ROUNDS)) {
       const movesA: Move[] = [];
       const movesB: Move[] = [];
 
-      for (const move of range(ROUND_LENGTH)) {
+      for (let move = 0; move < ROUND_LENGTH; move++) {
         const moveA = candidates[idxA].chooseNextMove(movesA, movesB);
         const moveB = candidates[idxB].chooseNextMove(movesB, movesA);
 
@@ -62,10 +64,11 @@ for (const round of range(NUM_ROUNDS)) {
 ///////////////////////////////////////////////////////////////
 
 /**
- * The AVERAGE points per turn that botA got against botB.
+ * The AVERAGE points botA got playing against botB.
  */
 for (let idxA = 0; idxA < candidates.length; idxA++) {
   for (let idxB = idxA; idxB < candidates.length; idxB++) {
+
     scoresTable[idxA][idxB] /= NUM_ROUNDS * ROUND_LENGTH;
 
     if (idxA != idxB) {
@@ -89,12 +92,12 @@ const scores2D = candidates.map(({ name: rowName }, rowIdx) => {
   return { [rowName]: row };
 });
 
-console.log("\n average points bot[row] got against bot[column]");
+console.log("\n average points bot[row] got playing against bot[column]");
 console.table(Object.assign({}, ...scores2D));
 
 
 /**
- * Print 1D AVERAGES in descending order.
+ * Print 1D AVERAGES, sorted from best bot to worst bot.
  */
 const avgScore = new WeakMap(candidates.map((candidate, idx) => {
   return [candidate, average(scoresTable[idx])]
@@ -109,5 +112,5 @@ const scores1D = candidatesSortedByAvgScore.map((candidate) => {
   return { [candidate.name]: row };
 });
 
-console.log("\n average against bots got on total");
+console.log("\n average points bots got on total");
 console.table(Object.assign({}, ...scores1D));

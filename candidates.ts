@@ -1,15 +1,5 @@
-import { Move } from "./types";
+import { Strategy } from "./types";
 import { lastOf } from "./utils";
-
-interface Strategy {
-  chooseNextMove(myMoves: Move[], theirMoves: Move[]): Move;
-
-  // optional callback for bots to have
-  onNewGame?(): void;
-
-  // allows state properties
-  [key: string]: any;
-}
 
 ///////////////////////////////////////////////////////////////
 ///                     T H E   B O T S                     ///
@@ -44,7 +34,7 @@ export const YesYesNoNoNo: Strategy = {
    * cooperate for 2 moves, defect for 3
    */
   chooseNextMove(myMoves, theirMoves) {
-    return (myMoves.length % 5) <= 2 ? "cooperate" : "defect";
+    return (myMoves.length % 5) < 2 ? "cooperate" : "defect";
   },
 };
 
